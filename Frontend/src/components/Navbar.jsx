@@ -14,7 +14,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-gray-800 text-white p-4 shadow-md fixed top-0 left-0 w-full z-50">
+    <nav className="bg-white text-black p-4 border-b fixed top-0 left-0 w-full z-50">
       <div className="container mx-auto flex justify-between items-center">
         <Link to="/" className="text-xl font-bold flex items-center gap-2">
           <FaStore /> StoreRater

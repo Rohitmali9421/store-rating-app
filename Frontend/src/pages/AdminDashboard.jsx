@@ -5,7 +5,7 @@ import { FaTachometerAlt, FaUsers, FaStore } from 'react-icons/fa';
 const AdminDashboard = () => {
   const linkClasses =
     "flex items-center gap-3 px-4 py-2 rounded-md text-gray-700 hover:bg-gray-200";
-  const activeLinkClasses = "bg-blue-500 text-white hover:bg-blue-600";
+  const activeLinkClasses = "bg-black text-white hover:bg-gray-600";
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-white pt-10">
