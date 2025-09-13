@@ -130,7 +130,7 @@ const DashboardPage = () => {
                 </div>
                 
                 {/* Pagination */}
-                {pagination.totalPages > 0 && (
+                {pagination && (
                   <div className="mt-10">
                     <Pagination
                       currentPage={pagination.currentPage}
