@@ -257,7 +257,7 @@ const StoreManagement = () => {
                                             <td className="p-4">
                                                 <div className="flex items-center justify-center">
                                                     <div className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full flex items-center gap-1">
-                                                        <span className="font-bold">{store.averageRating?.toFixed(1) || 'N/A'}</span>
+                                                        <span className="font-bold">{store.rating || 'N/A'}</span>
                                                         <FaStar className="text-amber-400" />
                                                     </div>
                                                 </div>
@@ -270,7 +270,6 @@ const StoreManagement = () => {
                         <div className="px-4 py-3 bg-gray-50 border-t border-gray-100 text-sm text-gray-500 flex justify-between items-center">
                             <div>{sortConfig.key && (<span>Sorted by {sortConfig.key} ({sortConfig.direction === 'asc' ? 'ascending' : 'descending'})</span>)}</div>
                             <div>
-                                {/* MODIFIED: Use storePagination here */}
                                 Showing {stores.length} of {storePagination?.totalItems || 0} stores
                             </div>
                         </div>
