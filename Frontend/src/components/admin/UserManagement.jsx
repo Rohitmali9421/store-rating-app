@@ -291,7 +291,6 @@ const UserManagement = () => {
             >
                 <option value="">All Roles</option>
                 <option value="NORMAL_USER">Normal User</option>
-                <option value="STORE_OWNER">Store Owner</option>
                 <option value="SYSTEM_ADMIN">System Admin</option>
             </select>
           </div>
