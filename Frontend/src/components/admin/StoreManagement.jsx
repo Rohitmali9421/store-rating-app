@@ -1,13 +1,15 @@
+// src/components/admin/StoreManagement.js
+
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchAllStores, addNewStore } from '../../features/admin/adminSlice';
 import { useForm } from 'react-hook-form';
 import { FaPlus, FaStar, FaArrowUp, FaArrowDown, FaExclamationTriangle, FaSync, FaSort, FaEye, FaEyeSlash, FaStore } from 'react-icons/fa';
-import Pagination from './Pagination'; // Make sure Pagination.js is in the same folder
+import Pagination from './Pagination';
+import TableSkeleton from './TableSkeleton'; // MODIFIED: Import the new skeleton component
 
 const StoreManagement = () => {
     const dispatch = useDispatch();
-    // MODIFIED: Destructure 'storePagination' instead of 'pagination'
     const { stores, storePagination, isLoading, isError, message } = useSelector((state) => state.admin);
 
     const [showForm, setShowForm] = useState(false);
@@ -72,6 +74,7 @@ const StoreManagement = () => {
         setRetryCount(prev => prev + 1);
     };
 
+    // This handles the very first load when the `stores` array is empty.
     if (isLoading && stores.length === 0) {
         return (
             <div className="container mx-auto p-4 md:p-6">
@@ -213,7 +216,8 @@ const StoreManagement = () => {
                 </div>
             </div>
 
-            {stores.length === 0 ? (
+            {/* Conditionally render "No Stores" message only if not loading and stores are empty */ }
+            {!isLoading && stores.length === 0 ? (
                 <div className="bg-white rounded-xl shadow-md p-8 text-center">
                     <div className="flex flex-col items-center justify-center py-10">
                         <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4"><FaStore className="text-blue-500 text-2xl" /></div>
@@ -244,38 +248,42 @@ const StoreManagement = () => {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-100">
-                                    {stores.map((store, index) => (
-                                        <tr key={store.id} className={`transition-colors group ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-blue-50`}>
-                                            <td className="p-4">
-                                                <div className="flex items-center">
-                                                    <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-bold mr-3 group-hover:bg-indigo-200 transition-colors">{store.name.charAt(0)}</div>
-                                                    <span className="font-medium text-gray-800">{store.name}</span>
-                                                </div>
-                                            </td>
-                                            <td className="p-4 text-gray-600"><div className="max-w-[200px] truncate" title={store.email}>{store.email}</div></td>
-                                            <td className="p-4 text-gray-600"><div className="max-w-[200px] truncate" title={store.address}>{store.address}</div></td>
-                                            <td className="p-4">
-                                                <div className="flex items-center justify-center">
-                                                    <div className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full flex items-center gap-1">
-                                                        <span className="font-bold">{store.rating || 'N/A'}</span>
-                                                        <FaStar className="text-amber-400" />
+                                    {/* MODIFIED: Show skeleton on load, otherwise show data */ }
+                                    {isLoading ? (
+                                        <TableSkeleton rows={10} cols={4} />
+                                    ) : (
+                                        stores.map((store, index) => (
+                                            <tr key={store.id} className={`transition-colors group ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-blue-50`}>
+                                                <td className="p-4">
+                                                    <div className="flex items-center">
+                                                        <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-bold mr-3 group-hover:bg-indigo-200 transition-colors">{store.name.charAt(0)}</div>
+                                                        <span className="font-medium text-gray-800">{store.name}</span>
                                                     </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
+                                                </td>
+                                                <td className="p-4 text-gray-600"><div className="max-w-[200px] truncate" title={store.email}>{store.email}</div></td>
+                                                <td className="p-4 text-gray-600"><div className="max-w-[200px] truncate" title={store.address}>{store.address}</div></td>
+                                                <td className="p-4">
+                                                    <div className="flex items-center justify-center">
+                                                        <div className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full flex items-center gap-1">
+                                                            <span className="font-bold">{store.rating || 'N/A'}</span>
+                                                            <FaStar className="text-amber-400" />
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
                                 </tbody>
                             </table>
                         </div>
                         <div className="px-4 py-3 bg-gray-50 border-t border-gray-100 text-sm text-gray-500 flex justify-between items-center">
                             <div>{sortConfig.key && (<span>Sorted by {sortConfig.key} ({sortConfig.direction === 'asc' ? 'ascending' : 'descending'})</span>)}</div>
                             <div>
-                                Showing {stores.length} of {storePagination?.totalItems || 0} stores
+                                Showing {isLoading ? '...' : stores.length} of {storePagination?.totalItems || 0} stores
                             </div>
                         </div>
                     </div>
 
-                    {/* MODIFIED: Use storePagination here */}
                     {storePagination  && (
                         <Pagination
                             currentPage={storePagination.currentPage}
