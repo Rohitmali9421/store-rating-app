@@ -1,0 +1,47 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  SYSTEM_ADMIN
+  NORMAL_USER
+  STORE_OWNER
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  name       String   @db.VarChar(60)
+  email      String   @unique
+  password   String
+  address    String   @db.VarChar(400)
+  role       Role     @default(NORMAL_USER)
+  ownedStore Store?
+  ratings    Rating[]
+}
+
+model Store {
+  id      Int      @id @default(autoincrement())
+  name    String
+  email   String   @unique
+  address String   @db.VarChar(400)
+  owner   User     @relation(fields: [ownerId], references: [id])
+  ownerId Int      @unique
+  ratings Rating[]
+}
+
+model Rating {
+  id      Int @id @default(autoincrement())
+  value   Int
+  userId  Int
+  user    User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  storeId Int
+  store   Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, storeId]) 
+}
